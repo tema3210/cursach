@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate diesel;
 
+use dotenv::dotenv;
+use std::env;
+
 
 use actix_web::{web, App, HttpServer, Responder};
 use actix_web_codegen::{get};

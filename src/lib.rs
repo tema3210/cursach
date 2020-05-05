@@ -5,8 +5,6 @@ use once_cell::sync::{OnceCell};
 //use deadpool::unmanaged::Pool;
 extern crate dotenv;
 
-use dotenv::dotenv;
-use std::env;
 
 use diesel::MysqlConnection;
 //use diesel::Connection;
@@ -59,7 +57,7 @@ pub fn initConnPool(url: String){
 			acc
 		})
 		*/
-		
+
 
 		let manager = ConnectionManager::<MysqlConnection>::new(url);
     	let pool = Pool::builder().build(manager).unwrap();
