@@ -32,7 +32,7 @@ pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
 
 	match res.len() {
 		0 => String::from("").with_status(http::status::StatusCode::from_u16(404).unwrap()),
-		//-----------------------------------||||||||| -?
+		//---------------------------------- ||||||||| -?
 		_ => serde_json::ser::to_string(&res).unwrap().with_status(http::status::StatusCode::from_u16(200).unwrap())
 	}
 }
