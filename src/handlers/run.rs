@@ -86,7 +86,7 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 								if let Some(_it) = info.competitors.iter().find(|x| **x == info.winner) {
 									Some({
 										use schema::Horses::dsl::*;
-										let mut stmt = Horses.select(ID).filter(ID.eq_any(info.competitors)).count();
+										let stmt = Horses.select(ID).filter(ID.eq_any(info.competitors.clone())).count();
 										stmt
 									})
 								} else {
@@ -108,17 +108,19 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 									.filter(DateOf.eq(info.date))
 							};
 							let run_transaction_p3 = {
-								use schema::CompetList::dsl::*;
-								let f = |id: i32| -> diesel::query_builder::InsertStatement<CompetList,_,_,_> {
+								let ic = info.clone();
+								move |id: i32| {
+									use schema::CompetList::dsl::*;
 									diesel::insert_into(CompetList)
-										.values(info.competitors.iter().map(|item| (id,item)).collect())
-								};
-								f
+										.values( {
+											ic.competitors.into_iter().map(|item| (Run_compet.eq(id),HorseID.eq(item))).collect::<Vec<(_,_)>>()
+										})
+								}
 							};
 							if let Some(stmt) = horses_check {
 								let resp: Result<u16,lib::PoolError> = lib::transaction(move |conn| {
 									let hc: usize = stmt.execute(conn)?;
-									if hc != info.competitors.len() {
+									if hc != info.clone().competitors.len() {
 										Ok(500u16)
 									} else {
 										run_transaction_p1.execute(conn)?;

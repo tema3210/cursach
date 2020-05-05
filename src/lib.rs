@@ -206,7 +206,7 @@ pub mod Protocol {
 		pub on_id_horse: i32,
 	}
 
-	#[derive(Deserialize)]
+	#[derive(Deserialize,Clone)]
 	pub struct RunRegisterPayload {
 		pub login: String,
 		pub passwh: Vec<u8>,
