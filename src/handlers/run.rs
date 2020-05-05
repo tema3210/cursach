@@ -6,6 +6,7 @@ use diesel::ExpressionMethods;
 use diesel::QueryDsl;
 use diesel::RunQueryDsl;
 
+
 #[get("/run/about/{id}")]
 pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder{
 	use std::convert::TryInto;
@@ -42,17 +43,20 @@ pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder{
 	}
 }
 
+
 #[get("/run/of/owner/{id}")]
 pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
 
+
 #[get("/run/of/horse/{id}")]
 pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
+
 
 #[post("/run/register")]
 pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) -> impl Responder{
@@ -112,7 +116,7 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 								move |id: i32| {
 									use schema::CompetList::dsl::*;
 									diesel::insert_into(CompetList)
-										.values( {
+										.values({
 											ic.competitors.into_iter().map(|item| (Run_compet.eq(id),HorseID.eq(item))).collect::<Vec<(_,_)>>()
 										})
 								}
