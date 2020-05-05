@@ -1,8 +1,7 @@
 #[macro_use]
 extern crate diesel;
 
-use dotenv::dotenv;
-use std::env;
+
 
 
 use actix_web::{web, App, HttpServer, Responder};
@@ -54,6 +53,8 @@ async fn main() -> std::io::Result<()> {
 	};
 
     {
+        use dotenv::dotenv;
+        use std::env;
         dotenv().ok();
 
     	let database_url = env::var("DATABASE_URL")
