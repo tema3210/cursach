@@ -17,7 +17,8 @@ mod lib;
 use crate::lib::*;
 pub mod schema;
 
-
+#[cfg(test)]
+mod tests;
 
 #[get("/static/{file}")]
 async fn static_srv(info: web::Path<(String,)>) -> impl Responder {

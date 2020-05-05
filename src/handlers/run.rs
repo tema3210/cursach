@@ -120,7 +120,7 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 							if let Some(stmt) = horses_check {
 								let resp: Result<u16,lib::PoolError> = lib::transaction(move |conn| {
 									let hc: usize = stmt.execute(conn)?;
-									if hc != info.clone().competitors.len() {
+									if hc != info.competitors.len() {
 										Ok(500u16)
 									} else {
 										run_transaction_p1.execute(conn)?;
