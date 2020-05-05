@@ -50,7 +50,14 @@ async fn main() -> std::io::Result<()> {
 		//return Ok(());
 	};
 
-	initConnPool();
+    {
+        dotenv().ok();
+
+    	let database_url = env::var("DATABASE_URL")
+        	.expect("DATABASE_URL must be set");
+        initConnPool(database_url);
+    }
+
     let srv = HttpServer::new(|| App::new() //ALL ENDPOINTS
     		.service(static_srv)
     		.service(run::run_about)

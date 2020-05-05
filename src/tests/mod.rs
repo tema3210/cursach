@@ -1,9 +1,9 @@
-#[test]
-fn fpt(){
-    assert_eq!(2 + 2, 4);
-}
+#[cfg(test)]
+mod init_tests {
+    #[test]
+    fn test_cell(){
+        assert_eq!(crate::lib::DBCONNPOOL.get().is_some(),false)
 
-#[test]
-fn st(){
-    assert_eq!(3 + 3, 6);
+
+    }
 }

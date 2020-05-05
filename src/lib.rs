@@ -20,6 +20,10 @@ use diesel::{
 
 use tokio_diesel::*;
 
+#[cfg(test)]
+pub static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
+
+#[cfg(not(test))]
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
 
 #[derive(Debug)]
@@ -45,7 +49,7 @@ where
 	}
 }
 
-pub fn initConnPool(){
+pub fn initConnPool(url: String){
 	DBCONNPOOL.set({
 		/*Pool::from({
 			let mut acc = Vec::new();
@@ -55,12 +59,9 @@ pub fn initConnPool(){
 			acc
 		})
 		*/
-		dotenv().ok();
+		
 
-    	let database_url = env::var("DATABASE_URL")
-        	.expect("DATABASE_URL must be set");
-
-		let manager = ConnectionManager::<MysqlConnection>::new(database_url);
+		let manager = ConnectionManager::<MysqlConnection>::new(url);
     	let pool = Pool::builder().build(manager).unwrap();
     	pool
 	}).unwrap_or_else(|err|{panic!("DB connection pool init failed")});
