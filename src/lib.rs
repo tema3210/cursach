@@ -25,6 +25,7 @@ static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = 
 #[derive(Debug)]
 pub struct PoolError{pub msg: &'static str}
 
+#[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
     F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
