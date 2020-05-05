@@ -107,10 +107,13 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 									.filter(Place.eq(info.place.clone()))
 									.filter(DateOf.eq(info.date))
 							};
-							let run_transaction_p3 = |id: i32| {
+							let run_transaction_p3 = {
 								use schema::CompetList::dsl::*;
-								diesel::insert_into(CompetList)
-									.values(info.competitors.iter().map(|item| (id,item)).collect())
+								let f = |id: i32| -> diesel::query_builder::InsertStatement<CompetList,_,_,_> {
+									diesel::insert_into(CompetList)
+										.values(info.competitors.iter().map(|item| (id,item)).collect())
+								};
+								f
 							};
 							if let Some(stmt) = horses_check {
 								let resp: Result<u16,lib::PoolError> = lib::transaction(move |conn| {
@@ -154,23 +157,3 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//das
