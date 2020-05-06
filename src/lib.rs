@@ -19,7 +19,7 @@ use diesel::{
 use tokio_diesel::*;
 
 #[cfg(test)]
-pub static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
+pub static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::SqliteConnection>>> = OnceCell::new();
 
 #[cfg(not(test))]
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
