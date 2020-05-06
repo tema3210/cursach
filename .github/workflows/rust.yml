@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install Dependency
+      run: apt install -y libsqlite3-dev
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose
