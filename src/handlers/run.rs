@@ -112,12 +112,12 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 									.filter(DateOf.eq(info.date))
 							};
 							let run_transaction_p3 = {
-								let ic = info.clone();
+								let ic = info.competitors.clone();
 								move |id: i32| {
 									use schema::CompetList::dsl::*;
 									diesel::insert_into(CompetList)
 										.values({
-											ic.competitors.into_iter().map(|item| (Run_compet.eq(id),HorseID.eq(item))).collect::<Vec<(_,_)>>()
+											ic.into_iter().map(|item| (Run_compet.eq(id),HorseID.eq(item))).collect::<Vec<(_,_)>>()
 										})
 								}
 							};
