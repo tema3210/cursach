@@ -27,10 +27,16 @@ static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = 
 #[derive(Debug)]
 pub struct PoolError{pub msg: &'static str}
 
+#[cfg(not(test))]
+type conn_t<'a> = &'a diesel::MysqlConnection;
+
+#[cfg(test)]
+type conn_t<'a> = &'a diesel::SqliteConnection;
+
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
-    F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
+    F: 'static + FnOnce(conn_t<'_>) -> QueryResult<T> + Send,
 {
 	let pool = DBCONNPOOL.get().expect("Pool uninitialized");
 	let res = pool.transaction(f).await;
