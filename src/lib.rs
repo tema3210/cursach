@@ -58,7 +58,8 @@ where
             pool.transaction(|c|{
                 use diesel_migrations::embed_migrations;
                 embed_migrations!();
-                embedded_migrations::run(c);
+                embedded_migrations::run(c)?;
+                Ok(())
             })
         };
         dbInitFlag.set(true);
