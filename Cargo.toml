@@ -10,7 +10,8 @@ actix-rt = "1"
 rustls = "0.16"
 tokio = {version= "0.2.11", features=["fs"]}
 diesel = { version = "1.4.3", features = ["sqlite","mysql","r2d2","chrono"] }
-diesel_derives="1.4.1"
+diesel_derives= "1.4.1"
+diesel_migrations = "1.4.0"
 dotenv = "0.9.0"
 chrono = { version = "0.4.10", features = ["serde"] }
 tokio-diesel = "0.3.0"

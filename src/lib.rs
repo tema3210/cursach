@@ -6,7 +6,7 @@ use once_cell::sync::{OnceCell};
 extern crate dotenv;
 
 
-use diesel::MysqlConnection;
+//use diesel::MysqlConnection;
 //use diesel::Connection;
 
 
@@ -48,13 +48,11 @@ where
         let manager = ConnectionManager::<conn_t>::new(":memory:");
     	let pool = Pool::builder().build(manager).unwrap();
         {
-            // use std::future;
-            // embed_migrations!();
-            // std::future::block_on(
-            //     pool.transaction(|conn|{
-            //         embedded_migrations::run(conn);
-            //     })
-            // )
+            use diesel_migrations::embed_migrations;
+            embed_migrations!();
+            let fut = pool.transaction(|conn|{
+                embedded_migrations::run(conn);
+            });
         }
     	pool
     });
@@ -78,7 +76,7 @@ pub fn initConnPool(url: String){
 		let manager = ConnectionManager::<conn_t>::new(url);
     	let pool = Pool::builder().build(manager).unwrap();
     	pool
-	}).unwrap_or_else(|err|{panic!("DB connection pool init failed")});
+	}).unwrap_or_else(|_err|{panic!("DB connection pool init failed")});
 }
 
 
