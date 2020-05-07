@@ -33,6 +33,9 @@ type conn_t = diesel::MysqlConnection;
 #[cfg(test)]
 type conn_t = diesel::SqliteConnection;
 
+#[cfg(test)]
+static dbInitFlag: OnceCell<bool> = OnceCell::new();
+
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
@@ -47,16 +50,19 @@ where
     let pool = DBCONNPOOL.get_or_init(||{
         let manager = ConnectionManager::<conn_t>::new(":memory:");
     	let pool = Pool::builder().build(manager).unwrap();
-        {
-            use diesel_migrations::embed_migrations;
-            embed_migrations!();
-            let fut = pool.transaction(|conn|{
-                embedded_migrations::run(conn);
-            });
-        }
     	pool
     });
 
+    if let None = dbInitFlag.get() {
+        let r = {
+            pool.transaction(|c|{
+                use diesel_migrations::embed_migrations;
+                embed_migrations!();
+                embedded_migrations::run(c);
+            })
+        };
+        dbInitFlag.set(true);
+    };
 	let res = pool.transaction(f).await;
 	match res {
 		Ok(data) => {
