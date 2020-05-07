@@ -53,18 +53,20 @@ where
     	pool
     });
     #[cfg(test)]
-    if let None = dbInitFlag.get() {
-        let r = {
-            use diesel_migrations::embed_migrations;
-            pool.transaction(|c|{
+    {
+        if let None = dbInitFlag.get() {
+            let r = {
                 use diesel_migrations::embed_migrations;
-                embed_migrations!();
-                embedded_migrations::run(c)?;
-                Ok(())
-            })
+                pool.transaction(|c|{
+                    use diesel_migrations::embed_migrations;
+                    embed_migrations!();
+                    embedded_migrations::run(c)?;
+                    Ok(())
+                })
+            };
+            dbInitFlag.set(true);
         };
-        dbInitFlag.set(true);
-    };
+    }
 	let res = pool.transaction(f).await;
 	match res {
 		Ok(data) => {
