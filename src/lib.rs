@@ -52,9 +52,10 @@ where
     	let pool = Pool::builder().build(manager).unwrap();
     	pool
     });
-
+    #[cfg(test)]
     if let None = dbInitFlag.get() {
         let r = {
+            use diesel_migrations::embed_migrations;
             pool.transaction(|c|{
                 use diesel_migrations::embed_migrations;
                 embed_migrations!();
