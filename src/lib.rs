@@ -58,9 +58,10 @@ where
             let r = {
                 use diesel_migrations::embed_migrations;
                 pool.transaction(|c|{
-                    use diesel_migrations::embed_migrations;
-                    embed_migrations!();
-                    embedded_migrations::run(c)?;
+                    // TODO: 
+                    // use diesel_migrations::embed_migrations;
+                    // embed_migrations!();
+                    // embedded_migrations::run(c)?;
                     Ok(())
                 })
             };
