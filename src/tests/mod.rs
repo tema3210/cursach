@@ -2,14 +2,6 @@
 extern crate diesel_migrations;
 
 #[cfg(test)]
-mod init_tests {
-    #[test]
-    fn test_cell(){
-        assert_eq!(crate::lib::DBCONNPOOL.get().is_some(),false);
-    }
-}
-
-#[cfg(test)]
 static dbInitFlag: OnceCell<bool> = OnceCell::new();
 
 #[cfg(test)]
