@@ -18,8 +18,6 @@ use diesel::{
 
 use tokio_diesel::*;
 
-#[cfg(test)]
-pub static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::SqliteConnection>>> = OnceCell::new();
 
 #[cfg(not(test))]
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
@@ -33,41 +31,12 @@ type conn_t = diesel::MysqlConnection;
 #[cfg(test)]
 type conn_t = diesel::SqliteConnection;
 
-#[cfg(test)]
-static dbInitFlag: OnceCell<bool> = OnceCell::new();
-
-#[inline(always)]
-pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
+#[cfg(not(test))]
+async fn transaction_inner<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
     F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
 {
-    //working in debug or release, so panicking in case of uninitialized pool;
-    #[cfg(not(test))]
 	let pool = DBCONNPOOL.get().expect("Pool uninitialized");
-
-    //working in test, so using in memory database;
-    #[cfg(test)]
-    let pool = DBCONNPOOL.get_or_init(||{
-        let manager = ConnectionManager::<conn_t>::new(":memory:");
-    	let pool = Pool::builder().build(manager).unwrap();
-    	pool
-    });
-    #[cfg(test)]
-    {
-        if let None = dbInitFlag.get() {
-            let r = {
-                use diesel_migrations::embed_migrations;
-                pool.transaction(|c|{
-                    // TODO: 
-                    // use diesel_migrations::embed_migrations;
-                    // embed_migrations!();
-                    // embedded_migrations::run(c)?;
-                    Ok(())
-                })
-            };
-            dbInitFlag.set(true);
-        };
-    }
 	let res = pool.transaction(f).await;
 	match res {
 		Ok(data) => {
@@ -80,6 +49,21 @@ where
 			Err(PoolError{msg: "Diesel error"})
 		},
 	}
+}
+
+#[inline(always)]
+pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
+where
+    F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
+{
+    #[cfg(not(test))]
+    {
+        return lib::transaction_inner(f)
+    }
+    #[cfg(test)]
+    {
+        return tests::transaction_inner(f)
+    }
 }
 
 pub fn initConnPool(url: String){
