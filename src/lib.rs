@@ -58,7 +58,7 @@ where
 {
     #[cfg(not(test))]
     {
-        return lib::transaction_inner(f)
+        return transaction_inner(f)
     }
     #[cfg(test)]
     {
