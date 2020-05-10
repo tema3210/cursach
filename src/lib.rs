@@ -58,11 +58,11 @@ where
 {
     #[cfg(not(test))]
     {
-        return transaction_inner(f)
+        return transaction_inner(f).await
     }
     #[cfg(test)]
     {
-        return tests::transaction_inner(f)
+        return tests::transaction_inner(f).await
     }
 }
 
