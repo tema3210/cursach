@@ -1,8 +1,7 @@
 #[macro_use]
 extern crate diesel;
-
-
-
+#[macro_use]
+extern crate diesel_migrations;
 
 use actix_web::{web, App, HttpServer, Responder};
 use actix_web_codegen::{get};
@@ -20,7 +19,7 @@ use crate::lib::*;
 pub mod schema;
 
 #[cfg(test)]
-mod tests;
+mod tests_framework;
 
 #[get("/static/{file}")]
 async fn static_srv(info: web::Path<(String,)>) -> impl Responder {
@@ -59,7 +58,7 @@ async fn main() -> std::io::Result<()> {
 
     	let database_url = env::var("DATABASE_URL")
         	.expect("DATABASE_URL must be set");
-        initConnPool(database_url);
+        crate::lib::initConnPool(database_url);
     }
 
     let srv = HttpServer::new(|| App::new() //ALL ENDPOINTS

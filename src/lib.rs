@@ -1,6 +1,8 @@
 #[allow(dead_code)]
 #[allow(non_snake_case)]
 
+
+
 use once_cell::sync::{OnceCell};
 //use deadpool::unmanaged::Pool;
 extern crate dotenv;
@@ -18,23 +20,15 @@ use diesel::{
 
 use tokio_diesel::*;
 
-
-#[cfg(not(test))]
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
 
 #[derive(Debug)]
 pub struct PoolError{pub msg: &'static str}
 
 #[cfg(not(test))]
-type conn_t = diesel::MysqlConnection;
-
-#[cfg(test)]
-type conn_t = diesel::SqliteConnection;
-
-#[cfg(not(test))]
 async fn transaction_inner<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
-    F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
+    F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
 {
 	let pool = DBCONNPOOL.get().expect("Pool uninitialized");
 	let res = pool.transaction(f).await;
@@ -54,7 +48,7 @@ where
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
-    F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
+    F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
 {
     #[cfg(not(test))]
     {
@@ -62,13 +56,14 @@ where
     }
     #[cfg(test)]
     {
-        return tests::transaction_inner(f).await
+        use crate::tests_framework::transaction_inner;
+        return transaction_inner(f).await
     }
 }
 
 pub fn initConnPool(url: String){
 	DBCONNPOOL.set({
-		let manager = ConnectionManager::<conn_t>::new(url);
+		let manager = ConnectionManager::<diesel::MysqlConnection>::new(url);
     	let pool = Pool::builder().build(manager).unwrap();
     	pool
 	}).unwrap_or_else(|_err|{panic!("DB connection pool init failed")});
