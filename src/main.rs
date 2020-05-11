@@ -3,6 +3,8 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
+#![allow(nonstandard_style)]
+
 use actix_web::{web, App, HttpServer, Responder};
 use actix_web_codegen::{get};
 use std::path::PathBuf;

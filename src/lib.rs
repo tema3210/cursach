@@ -1,6 +1,8 @@
 #[allow(dead_code)]
 #[allow(non_snake_case)]
 
+#![allow(nonstandard_style)]
+
 use once_cell::sync::{OnceCell};
 extern crate dotenv;
 use diesel::{
@@ -52,8 +54,8 @@ where
     }
     #[cfg(test)]
     {
-        use crate::tests_framework::transaction_inner;
-        return transaction_inner(f).await
+        //use crate::tests_framework::transaction_inner;
+        return crate::tests_framework::transaction_inner(f).await
     }
 }
 
