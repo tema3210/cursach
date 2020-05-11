@@ -1,7 +1,6 @@
-#[allow(dead_code)]
-#[allow(non_snake_case)]
+// #[allow(dead_code)]
+// #[allow(non_snake_case)]
 
-#![allow(nonstandard_style)]
 
 use once_cell::sync::{OnceCell};
 extern crate dotenv;
