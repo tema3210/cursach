@@ -1,25 +1,16 @@
 #[allow(dead_code)]
 #[allow(non_snake_case)]
 
-
-
 use once_cell::sync::{OnceCell};
-//use deadpool::unmanaged::Pool;
 extern crate dotenv;
-
-
-//use diesel::MysqlConnection;
-//use diesel::Connection;
-
-
 use diesel::{
     prelude::*,
     r2d2::{ConnectionManager, Pool},
-    //result::Result as DResult,
 };
 
 use tokio_diesel::*;
 
+//Connection pool
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
 
 #[derive(Debug)]
@@ -44,11 +35,16 @@ where
 		},
 	}
 }
+#[cfg(test)]
+type conn_t = diesel::SqliteConnection;
+
+#[cfg(not(test))]
+type conn_t = diesel::MysqlConnection;
 
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
-    F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
+    F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
 {
     #[cfg(not(test))]
     {
