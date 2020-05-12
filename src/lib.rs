@@ -9,7 +9,6 @@ use diesel::{
     r2d2::{ConnectionManager, Pool},
 };
 
-use tokio_diesel::*;
 
 //Connection pool
 static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = OnceCell::new();
@@ -54,7 +53,7 @@ where
     #[cfg(test)]
     {
         //use crate::tests_framework::transaction_inner;
-        return crate::tests_framework::transaction_inner(f).await
+        return tests_framework::transaction_inner(f).await
     }
 }
 
