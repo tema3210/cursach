@@ -134,7 +134,7 @@ pub mod ORM {
 		pub UUID: Option<i32>,
 	}
 
-	#[derive(Queryable)]
+	#[derive(Queryable,Serialize)]
 	pub struct Horses {
 		pub ID: i32,
 		pub Name: Option<String>,
