@@ -12,7 +12,7 @@ pub async fn horse_info(_info: web::Path<(u64,)>) -> impl Responder{
 		Horses.filter(ID.eq(info.0))
 	}
 	let resp = lib::transaction(move |conn|{
-		prep_select.load::<lib::ORM::Run>(conn)
+		prep_select.load::<lib::ORM::Horses>(conn)
 	}).await;
 
 	match resp {
