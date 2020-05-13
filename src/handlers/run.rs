@@ -50,6 +50,25 @@ pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
 
+#[get("/run/pending")]
+pub async fn runs_pending() -> impl Responder{
+	let stmt = {
+		use schema::Run::dsl::*;
+		Run.filter(Winner.eq(None))
+	};
+	let res = lib::transaction(move |conn|{
+		stmt.load::<lib::ORM::Run>(conn)
+	});
+	match res {
+		Ok(vec) => {
+			serde_json::ser::to_string(&vec).with_status(200.try_into().unwrap())
+		},
+		Err(_) => {
+			String::from("").with_status(500.try_into().unwrap())
+		}
+	}
+}
+
 
 #[get("/run/of/horse/{id}")]
 pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{

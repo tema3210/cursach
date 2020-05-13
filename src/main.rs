@@ -69,6 +69,7 @@ async fn main() -> std::io::Result<()> {
     		.service(run::run_of_owner)
     		.service(run::run_of_horse)
     		.service(run::run_register)
+            .service(run::runs_pending)
     		.service(horses::horse_info)
     		.service(horses::horse_info_many)
     		.service(horses::horse_of)
