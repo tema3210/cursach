@@ -8,7 +8,7 @@ use diesel::{
     prelude::*,
     r2d2::{ConnectionManager, Pool},
 };
-use tokio_diesel::*
+use tokio_diesel::*;
 
 
 //Connection pool
@@ -55,7 +55,7 @@ where
     {
         #[cfg(test)]
         mod tests_framework;
-        
+
         return tests_framework::transaction_inner(f).await
     }
 }
