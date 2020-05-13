@@ -64,26 +64,26 @@ async fn main() -> std::io::Result<()> {
     }
 
     let srv = HttpServer::new(|| App::new() //ALL ENDPOINTS
-    		.service(static_srv)
-    		.service(run::run_about)
-    		.service(run::run_of_owner)
-    		.service(run::run_of_horse)
-    		.service(run::run_register)
-            .service(run::runs_pending)
-            .service(run::runs_pending_of)
-    		.service(horses::horse_info)
-    		.service(horses::horse_info_many)
-    		.service(horses::horse_of)
-    		.service(users::usr_login)
-    		.service(users::usr_reg)
-    		.service(users::usr_about)
-    		.service(owners::owner_about)
-    		.service(owners::owner_of)
-    		.service(paym::in_paym)
-    		.service(paym::out_paym)
-    		.service(bet::bet_about)
-    		.service(bet::bet_of)
-    		.service(bet::bet_make)
+    		.service(static_srv) //+
+    		.service(run::run_about) //+
+    		.service(run::run_of_owner) //-
+    		.service(run::run_of_horse) //-
+    		.service(run::run_register) //+
+            .service(run::runs_pending) //+
+            .service(run::runs_pending_of) //+
+    		.service(horses::horse_info) //+
+    		.service(horses::horse_info_many) //-
+    		.service(horses::horse_of) //-
+    		.service(users::usr_login) //+
+    		.service(users::usr_reg) //-
+    		.service(users::usr_about) //+
+    		.service(owners::owner_about) //-
+    		.service(owners::owner_of) //-
+    		.service(paym::in_paym) //-
+    		.service(paym::out_paym) //-
+    		.service(bet::bet_about) //+
+    		.service(bet::bet_of) //+
+    		.service(bet::bet_make) //+
     	);
 
     if cfg!(release) {
