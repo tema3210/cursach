@@ -71,15 +71,31 @@ pub async fn runs_pending() -> impl Responder{
 
 #[get("/run/pending/of/{id}")]
 pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder{
-	let stmt = {
+	let stmt_sr = |ids| {
 		use schema::Run::dsl::*;
-		Run.filter(Winner.eq(None)).filter(Who.eq(Some(info.0)))
+		Run.filter(Winner.eq(None)).filter(ID.eq_any(ids))
 	};
+	let bet_stmt = {
+		use schema::Bet::dsl::*;
+		Bet.select(ID).filter(Who.eq(Some(info.0)))
+	}
+
 	let res = lib::transaction(move |conn|{
-		stmt.load::<lib::ORM::Run>(conn)
+		let res = bet_stmt.execute(conn);
+		match res{
+			Ok(vec) if vec.len() > 0 => {
+				Ok((stmt_sr(vec).execute(conn)?,200))
+			},
+			Ok(vec) if vec.len() == 0 => {
+				Ok((Vec::new(),404))
+			},
+			Err(_e) {
+				Err(())
+			}
+		}
 	});
 	match res {
-		Ok(vec) => {
+		Ok((vec,code)) => {
 			serde_json::ser::to_string(&vec).with_status(200.try_into().unwrap())
 		},
 		Err(_) => {
