@@ -58,7 +58,7 @@ pub async fn runs_pending() -> impl Responder{
 	};
 	let res = lib::transaction(move |conn|{
 		stmt.load::<lib::ORM::Run>(conn)
-	});
+	}).await;
 	match res {
 		Ok(vec) => {
 			serde_json::ser::to_string(&vec).with_status(200.try_into().unwrap())
@@ -84,7 +84,7 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder{
 		let res = bet_stmt.execute(conn);
 		match res{
 			Ok(vec) if vec.len() > 0 => {
-				Ok((stmt_sr(vec).execute(conn)?,200))
+				Ok((stmt_sr(vec).execute(conn)?,200u16))
 			},
 			Ok(vec) if vec.len() == 0 => {
 				Ok((Vec::new(),404))
@@ -93,13 +93,13 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder{
 				Err(())
 			}
 		}
-	});
+	}).await;
 	match res {
 		Ok((vec,code)) => {
-			serde_json::ser::to_string(&vec).with_status(200.try_into().unwrap())
+			serde_json::ser::to_string(&vec).with_status(code.try_into().unwrap())
 		},
 		Err(_) => {
-			String::from("").with_status(500.try_into().unwrap())
+			String::from("").with_status(500u16.try_into().unwrap())
 		}
 	}
 }
