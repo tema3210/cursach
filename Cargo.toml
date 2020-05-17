@@ -5,7 +5,7 @@ authors = ["tema3210"]
 edition = "2018"
 
 [dependencies]
-actix-web = {version="2",features=["rustls"]}
+actix-web = {version="2.0.0",features=["rustls"]}
 actix-rt = {version="1"}
 rustls = "0.16"
 tokio = {version= "0.2.11", features=["fs"]}
