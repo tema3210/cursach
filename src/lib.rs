@@ -54,7 +54,7 @@ where
     #[cfg(test)]
     {
         #[cfg(test)]
-        #[path(tests_framework/mod.rs)]
+        #[path("tests_framework/mod.rs")]
         mod tests_framework;
 
         return tests_framework::transaction_inner(f).await
