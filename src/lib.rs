@@ -42,6 +42,10 @@ type conn_t = diesel::SqliteConnection;
 #[cfg(not(test))]
 type conn_t = diesel::MysqlConnection;
 
+#[cfg(test)]
+#[path = "tests_framework/mod.rs"]
+mod tests_framework;
+
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
@@ -53,10 +57,6 @@ where
     }
     #[cfg(test)]
     {
-        #[cfg(test)]
-        #[path("tests_framework/mod.rs")]
-        mod tests_framework;
-
         return tests_framework::transaction_inner(f).await
     }
 }

@@ -17,11 +17,11 @@ use rustls::{NoClientAuth, ServerConfig};
 
 
 mod lib;
-use crate::lib::*;
+//use crate::lib::*;
 pub mod schema;
 
 #[cfg(test)]
-#[path("tests_framework/mod.rs")]
+#[path = "tests_framework/mod.rs"]
 mod tests_framework;
 
 #[get("/static/{file}")]
