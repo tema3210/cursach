@@ -90,6 +90,9 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
 			},
 			Ok(vec) if vec.len() == 0 => {
 				Ok((Vec::new(),404u16))
+			},
+			Ok(_) => {
+				Ok((Vec::new(),500u16))
 			}
 			Err(_e) => {
 				Err(_e)
