@@ -3,24 +3,27 @@ use actix_web_codegen::{get};
 //use diesel::MysqlConnection;
 use crate::{schema,lib};
 
-
+use diesel::ExpressionMethods;
+use diesel::QueryDsl;
+use diesel::RunQueryDsl;
 
 #[get("/horses/info/{id}")]
-pub async fn horse_info(_info: web::Path<(u64,)>) -> impl Responder{
+pub async fn horse_info(info: web::Path<(i32,)>) -> impl Responder{
 	let prep_select = {
 		use schema::Horses::dsl::*;
 		Horses.filter(ID.eq(info.0))
-	}
+	};
 	let resp = lib::transaction(move |conn|{
-		prep_select.load::<lib::ORM::Horses>(conn)
+		prep_select.execute(conn)
 	}).await;
 
+	use std::convert::TryInto;
 	match resp {
 		Ok(horse) => {
-			serde_json::ser::to_string(&horse).unwrap().with_status(200.try_into().unwrap())
+			serde_json::ser::to_string(&horse).unwrap().with_status(200u16.try_into().unwrap())
 		},
 		Err(_) => {
-			String::from("").with_status(500.try_into().unwrap())
+			String::from("").with_status(500u16.try_into().unwrap())
 		}
 	}
 }

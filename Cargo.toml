@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 actix-web = {version="2",features=["rustls"]}
-actix-rt = "1"
+actix-rt = {version="1"}
 rustls = "0.16"
 tokio = {version= "0.2.11", features=["fs"]}
 diesel = { version = "1.4.3", features = ["sqlite","mysql","r2d2","chrono"] }
