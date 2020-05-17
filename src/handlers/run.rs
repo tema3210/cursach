@@ -51,55 +51,59 @@ pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
 }
 
 #[get("/run/pending")]
-pub async fn runs_pending() -> impl Responder{
+pub async fn runs_pending() -> impl Responder {
 	let stmt = {
 		use schema::Run::dsl::*;
-		Run.filter(Winner.eq(None))
+		Run.filter(Winner.eq(Option::<i32>::None))
 	};
 	let res = lib::transaction(move |conn|{
 		stmt.load::<lib::ORM::Run>(conn)
 	}).await;
+
+	use std::convert::TryInto;
 	match res {
 		Ok(vec) => {
-			serde_json::ser::to_string(&vec).with_status(200.try_into().unwrap())
+			Result::<_,()>::Ok(serde_json::ser::to_string(&vec).unwrap().with_status(200u16.try_into().unwrap()))
 		},
 		Err(_) => {
-			String::from("").with_status(500.try_into().unwrap())
+			Ok(String::from("").with_status(500u16.try_into().unwrap()))
 		}
 	}
 }
 
 #[get("/run/pending/of/{id}")]
-pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder{
-	let stmt_sr = |ids| {
-		use schema::Run::dsl::*;
-		Run.filter(Winner.eq(None)).filter(ID.eq_any(ids))
-	};
-	let bet_stmt = {
-		use schema::Bet::dsl::*;
-		Bet.select(ID).filter(Who.eq(Some(info.0)))
-	}
+pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
 
-	let res = lib::transaction(move |conn|{
-		let res = bet_stmt.execute(conn);
-		match res{
+	let t_stmt = {
+		use schema::Run::dsl::*;
+		Run.filter(Winner.eq(Option::<i32>::None)).filter(ID.eq_any({
+			use schema::Bet::dsl::*;
+			Bet.select(ID).filter(Who.eq(Some(info.0)))
+		}))
+	};
+
+	let res = lib::transaction(move |conn| {
+		let resi = t_stmt.load::<lib::ORM::Run>(conn);
+		match resi {
 			Ok(vec) if vec.len() > 0 => {
-				Ok((stmt_sr(vec).execute(conn)?,200u16))
+				Ok((vec,200u16))
 			},
 			Ok(vec) if vec.len() == 0 => {
-				Ok((Vec::new(),404))
-			},
-			Err(_e) {
-				Err(())
+				Ok((Vec::new(),404u16))
+			}
+			Err(_e) => {
+				Err(_e)
 			}
 		}
 	}).await;
+
+	use std::convert::TryInto;
 	match res {
 		Ok((vec,code)) => {
-			serde_json::ser::to_string(&vec).with_status(code.try_into().unwrap())
+			Result::<_,()>::Ok(serde_json::ser::to_string(&vec).unwrap().with_status(code.try_into().unwrap()))
 		},
 		Err(_) => {
-			String::from("").with_status(500u16.try_into().unwrap())
+			Ok(String::from("").with_status(500u16.try_into().unwrap()))
 		}
 	}
 }
