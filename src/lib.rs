@@ -68,6 +68,7 @@ pub fn initConnPool(url: String){
     	let pool = Pool::builder().build(manager).unwrap();
     	pool
 	}).unwrap_or_else(|_err|{panic!("DB connection pool init failed")});
+    println!("Conn pool set up done");
 }
 
 
