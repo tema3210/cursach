@@ -145,13 +145,13 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 				1 => {
 					let usr = &v[0];
 					match usr.UserType {
-						Some(0) => { //guest
+						Some(lib::ORM::UserType::Guest) => { //guest
 							String::from("").with_status(403u16.try_into().unwrap())
 						},
-						Some(1) => { //user
+						Some(lib::ORM::UserType::User) => { //user
 							String::from("").with_status(403u16.try_into().unwrap())
 						}
-						Some(2) => { //admin
+						Some(lib::ORM::UserType::Admin) => { //admin
 							let horses_check = {
 								if let Some(_it) = info.competitors.iter().find(|x| **x == info.winner) {
 									Some({
