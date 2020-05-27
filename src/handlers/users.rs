@@ -39,7 +39,7 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 
 		},
 		Err(_err) => {
-			String::from("").with_status(http::status::StatusCode::from_u16(500).unwrap())
+			String::from("DB error").with_status(http::status::StatusCode::from_u16(500).unwrap())
 		},
 	}
 }
