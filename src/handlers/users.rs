@@ -9,6 +9,7 @@ use diesel::RunQueryDsl;
 
 #[get("/users/login")]
 pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl Responder {
+	println!("users/login handler called");
 	use schema::UserData::dsl::*;
 	use serde_json;
 
@@ -45,11 +46,13 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 
 #[post("/users/register")]
 pub async fn usr_reg(info: web::Json<lib::Protocol::UserRegisterPayload>) -> impl Responder {
+	println!("users/reg handler called");
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
 
 #[get("/users/about/{login}")]
 pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
+	println!("users/about handler called");
 	use serde_json;
 
 	let stmt_usr = {

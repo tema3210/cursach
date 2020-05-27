@@ -9,6 +9,7 @@ use diesel::RunQueryDsl;
 
 #[get("/horses/info/{id}")]
 pub async fn horse_info(info: web::Path<(i32,)>) -> impl Responder{
+	println!("horses/info/id handler called");
 	let prep_select = {
 		use schema::Horses::dsl::*;
 		Horses.filter(ID.eq(info.0))
@@ -30,11 +31,13 @@ pub async fn horse_info(info: web::Path<(i32,)>) -> impl Responder{
 
 #[get("/horses/info/{idl}-{idh}")]
 pub async fn horse_info_many(_info: web::Path<(u64,u64)>) -> impl Responder{
+	println!("horses/info/l-h handler called");
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
 #[get("/horses/of/{own_id}")]
 pub async fn horse_of(_info: web::Path<(u64,)>) -> impl Responder {
+	println!("horses/of/ handler called");
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }

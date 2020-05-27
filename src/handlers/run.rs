@@ -8,7 +8,8 @@ use diesel::RunQueryDsl;
 
 
 #[get("/run/about/{id}")]
-pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder{
+pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder {
+	println!("run/about handler called");
 	use std::convert::TryInto;
 	use serde_json;
 	//TODO
@@ -46,12 +47,14 @@ pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder{
 
 #[get("/run/of/owner/{id}")]
 pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
+	println!("run/of/owner handler called");
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
 
 #[get("/run/pending")]
 pub async fn runs_pending() -> impl Responder {
+	println!("run/apending handler called");
 	let stmt = {
 		use schema::Run::dsl::*;
 		Run.filter(Winner.eq(Option::<i32>::None))
@@ -73,7 +76,7 @@ pub async fn runs_pending() -> impl Responder {
 
 #[get("/run/pending/of/{id}")]
 pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
-
+	println!("run/pending/of handler called");
 	let t_stmt = {
 		use schema::Run::dsl::*;
 		Run.filter(Winner.eq(Option::<i32>::None)).filter(ID.eq_any({
@@ -114,6 +117,7 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
 
 #[get("/run/of/horse/{id}")]
 pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{
+	println!("run/of/horse handler called");
 	//TODO
 	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
@@ -121,6 +125,7 @@ pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{
 
 #[post("/run/register")]
 pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) -> impl Responder{
+	println!("run/register handler called");
 	use std::convert::TryInto;
 	let usq = {
 		use schema::UserData::dsl::*;

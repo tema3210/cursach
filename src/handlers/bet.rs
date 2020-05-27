@@ -8,6 +8,7 @@ use diesel::RunQueryDsl;
 
 #[get("/bet/about/{id}")]
 pub async fn bet_about(info: web::Path<(i32,)>) -> impl Responder{
+	println!("bet/about handler called");
 	use schema::Bet::dsl::*;
 	use serde_json;
 	let stmt = Bet.filter(ID.eq(info.0));
@@ -21,6 +22,7 @@ pub async fn bet_about(info: web::Path<(i32,)>) -> impl Responder{
 
 #[get("/bet/of/{id_usr}/")]
 pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
+	println!("bet/of handler called");
 	use schema::Bet::dsl::*;
 	use serde_json;
 
@@ -39,6 +41,7 @@ pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
 
 #[post("/bet/make")]
 pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Responder {
+	println!("bet/make handler called");
 	let (id,code) = {
 		use schema::UserData::dsl::*;
 
