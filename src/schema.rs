@@ -1,4 +1,4 @@
-use crate::ORM::User_type;
+use runs_srv::ORM::User_type;
 
 table! {
     Bet (ID) {
