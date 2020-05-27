@@ -110,7 +110,13 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 					},
 					2 => {
 						serde_json::json!({
-							"UserType": res.UserType,
+							"UserType": {
+								match res.UserType {
+									1 =>"Admin",
+									2 =>"User",
+									3 =>"Guest",
+								}
+							},
 							"Credits": res.Credits,
 							"Balance": res.Balance,
 							"About": res.AssocInf,
