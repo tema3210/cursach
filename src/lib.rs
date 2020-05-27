@@ -91,9 +91,9 @@ pub mod ORM {
 
 	#[derive(Serialize)]
 	pub enum UserType {
-		Admin=2,
-		User=1,
-		Guest=0,
+		Admin=1,
+		User=2,
+		Guest=3,
 	}
 	impl std::default::Default for UserType {
 		fn default() -> Self {
@@ -108,9 +108,9 @@ pub mod ORM {
 	{
 	    fn from_sql(bytes: Option<&<DB as Backend>::RawValue>) -> diesel::deserialize::Result<Self> {
 	        match i32::from_sql(bytes)? {
-	            2 => Ok(UserType::Admin),
-	            1 => Ok(UserType::User),
-	            0 => Ok(UserType::Guest),
+	            1 => Ok(UserType::Admin),
+	            2 => Ok(UserType::User),
+	            3 => Ok(UserType::Guest),
 	            x => Err(format!("Unrecognized variant {}", x).into()),
 	        }
 	    }
@@ -123,7 +123,7 @@ pub mod ORM {
 		pub Login: Option<String>,
 		pub Passwh: Option<Vec<u8>>,
         // 0 - guest; 1 - user; 2 - admin
-		pub UserType: Option<i32>,
+		pub UserType: Option<UserType>,
 		pub Credits: Option<i32>,
 		pub Balance: f64,
 		pub AssocInf: Option<String>,

@@ -60,21 +60,29 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 		UserData.filter(Login.eq(Some(info.0.clone())))
 	};
 	let (res,code) = {
-		let vec = lib::transaction(|conn|{
+		let res = lib::transaction(|conn|{
 			stmt_usr.load::<lib::ORM::UserData>(conn)
 		}).await.unwrap_or(Vec::new());
 
-		match vec.len() {
-			0 => {
-				(None,404)
+		match res {
+			Ok(vec) => {
+				match vec.len() {
+					0 => {
+						(None,404)
+					},
+					1 => {
+						(Some(vec[0].clone()),200)
+					},
+					_ => {
+						(None,500)
+					}
+				}
 			},
-			1 => {
-				(Some(vec[0].clone()),200)
-			},
-			_ => {
+			Err(_) => {
 				(None,500)
 			}
 		}
+
 	};
 	match code {
 		404 => {
