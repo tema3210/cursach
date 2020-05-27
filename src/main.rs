@@ -95,8 +95,10 @@ async fn main() -> std::io::Result<()> {
 	    let mut keys = rsa_private_keys(key_file).unwrap();
 	    config.set_single_cert(cert_chain, keys.remove(0)).unwrap();
 
+        println!("Running on port 8443");
     	srv.bind_rustls("127.0.0.1:8443",config)?.run().await
     } else {
+        println!("Running on port 8080");
     	srv.bind("127.0.0.1:8080").unwrap().run().await
     }
 }

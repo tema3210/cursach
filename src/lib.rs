@@ -108,9 +108,9 @@ pub mod ORM {
 	{
 	    fn from_sql(bytes: Option<&<DB as Backend>::RawValue>) -> diesel::deserialize::Result<Self> {
 	        match i32::from_sql(bytes)? {
-	            1 => Ok(UserType::Admin),
-	            2 => Ok(UserType::User),
-	            3 => Ok(UserType::Guest),
+	            2 => Ok(UserType::Admin),
+	            1 => Ok(UserType::User),
+	            0 => Ok(UserType::Guest),
 	            x => Err(format!("Unrecognized variant {}", x).into()),
 	        }
 	    }
