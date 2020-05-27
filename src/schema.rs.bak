@@ -1,3 +1,5 @@
+use runs_srv::ORM::User_type;
+
 table! {
     Bet (ID) {
         ID -> Integer,
@@ -62,7 +64,7 @@ table! {
         ID -> Integer,
         Login -> Nullable<Varchar>,
         Passwh -> Nullable<Binary>,
-        UserType -> Nullable<Integer>,
+        UserType -> Nullable<runs_srv::ORM::User_type>,
         Credits -> Nullable<Integer>,
         Balance -> Double,
         AssocInf -> Nullable<Varchar>,

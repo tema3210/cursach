@@ -126,7 +126,7 @@ pub mod ORM {
 		pub Login: Option<String>,
 		pub Passwh: Option<Vec<u8>>,
         // 0 - guest; 1 - user; 2 - admin
-		pub UserType: Option<UserType>,
+		pub UserType: Option<i32>,
 		pub Credits: Option<i32>,
 		pub Balance: f64,
 		pub AssocInf: Option<String>,
