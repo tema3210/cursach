@@ -88,10 +88,10 @@ pub mod ORM {
 		pub Winner: Option<i32>, //Loshad chto pobedila
 		pub CompetLFK: Option<i32> //
 	}
-    
+
     use diesel_derive_enum::DbEnum;
 
-	#[derive(Serialize,Clone,DbEnum)]
+	#[derive(Serialize,Clone,DbEnum,Debug)]
 	pub enum UserType {
 		Admin=1,
 		User=2,
