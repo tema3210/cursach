@@ -1,4 +1,4 @@
-//use crate::lib::ORM::UserType;
+use crate::lib::ORM::UserType;
 
 table! {
     Bet (ID) {
@@ -64,7 +64,7 @@ table! {
         ID -> Integer,
         Login -> Nullable<Varchar>,
         Passwh -> Nullable<Binary>,
-        UserType -> Nullable<Enum>,
+        UserType -> Nullable<UserType>,
         Credits -> Nullable<Integer>,
         Balance -> Double,
         AssocInf -> Nullable<Varchar>,
