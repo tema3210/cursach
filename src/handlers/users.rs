@@ -62,7 +62,7 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 	let (res,code) = {
 		let res = lib::transaction(|conn|{
 			stmt_usr.load::<lib::ORM::UserData>(conn)
-		}).await.unwrap_or(Vec::new());
+		}).await;
 
 		match res {
 			Ok(vec) => {
