@@ -1,3 +1,5 @@
+use crate::lib::ORM::UserType;
+
 table! {
     Bet (ID) {
         ID -> Integer,
