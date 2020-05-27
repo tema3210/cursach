@@ -9,7 +9,14 @@ use diesel::RunQueryDsl;
 
 #[get("/users/about/{login}")]
 pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
+	use std::convert::TryInto;
+
 	println!("users/about handler called");
+
+	let stmt_usr = {
+		use schema::UserData::dsl::*;
+		UserData.filter(Login.eq(Some(info.0.clone())))
+	};
 
 	let res = lib::transaction(|conn|{
 		stmt_usr.load::<lib::ORM::UserData>(conn)
