@@ -64,7 +64,7 @@ table! {
         ID -> Integer,
         Login -> Nullable<Varchar>,
         Passwh -> Nullable<Binary>,
-        UserType -> Nullable<User_type>,
+        UserType -> Nullable<runs_srv::ORM::User_type>,
         Credits -> Nullable<Integer>,
         Balance -> Double,
         AssocInf -> Nullable<Varchar>,
