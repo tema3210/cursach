@@ -89,7 +89,7 @@ pub mod ORM {
 		pub CompetLFK: Option<i32> //
 	}
 
-	#[derive(Serialize,Clone)]
+	#[derive(Serialize,Clone,Queryable)]
 	pub enum UserType {
 		Admin=1,
 		User=2,
