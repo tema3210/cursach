@@ -89,10 +89,11 @@ pub mod ORM {
 		pub CompetLFK: Option<i32> //
 	}
 
-    use diesel_derive_enum::DbEnum;
+    //use diesel_derive_enum::DbEnum;
 
-	#[derive(Serialize,Clone,DbEnum,Debug,PartialEq,Copy)]
-    #[DieselType = "User_type"]
+    /*,DbEnum,*/
+	#[derive(Serialize,Clone,Debug,PartialEq,Copy)]
+    //#[DieselType = "User_type"]
 	pub enum UserType {
 		Admin=1,
 		User=2,
