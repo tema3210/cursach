@@ -62,6 +62,7 @@ where
 }
 
 pub fn initConnPool(url: String){
+    println!("DB url: {:?}",url);
 	DBCONNPOOL.set({
 		let manager = ConnectionManager::<diesel::MysqlConnection>::new(url);
     	let pool = Pool::builder().build(manager).unwrap();
