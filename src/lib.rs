@@ -91,7 +91,7 @@ pub mod ORM {
 
     use diesel_derive_enum::DbEnum;
 
-	#[derive(Serialize,Clone,DbEnum,Debug,PartialEq)]
+	#[derive(Serialize,Clone,DbEnum,Debug,PartialEq,Copy)]
     #[DieselType = "User_type"]
 	pub enum UserType {
 		Admin=1,
