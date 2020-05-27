@@ -62,7 +62,7 @@ table! {
         ID -> Integer,
         Login -> Nullable<Varchar>,
         Passwh -> Nullable<Binary>,
-        UserType -> Nullable<Integer>,
+        UserType -> Nullable<UserType>,
         Credits -> Nullable<Integer>,
         Balance -> Double,
         AssocInf -> Nullable<Varchar>,
