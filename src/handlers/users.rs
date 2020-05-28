@@ -89,6 +89,7 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 
 	let passwh = base64::decode(info.passwh);
 	if let Err(_) = passwh {
+		use std::convert::TryInto;
 		return String::from("").with_status(400u16.try_into().unwrap());
 	};
 

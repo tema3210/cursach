@@ -45,6 +45,7 @@ pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Res
 
 	let passwh = base64::decode(req.passwh);
 	if let Err(_) =  passwh {
+		use std::convert::TryInto;
 		return String::from("").with_status(400u16.try_into().unwrap());
 	};
 
