@@ -56,6 +56,7 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 								"Balance": usr.Balance,
 							}).to_string().with_status(200u16.try_into().unwrap())
 						},
+						_ => unreachable!(),
 					}
 				},
 				_ => {
@@ -67,6 +68,9 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 			String::from("").with_status(404u16.try_into().unwrap())
 		},
 		Ok(vec) if vec.len() > 1 => {
+			String::from("").with_status(500u16.try_into().unwrap())
+		},
+		Ok(_) => {
 			String::from("").with_status(500u16.try_into().unwrap())
 		},
 		Err(_) => {
