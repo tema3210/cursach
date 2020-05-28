@@ -130,7 +130,7 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 	let usq = {
 		use schema::UserData::dsl::*;
 
-		let passwh = base64::decode(&info.passwh);
+		let passwh = base64::decode_config(&info.passwh,lib::getB64Config());
 		if let Err(_) = passwh {
 			return String::from("").with_status(400u16.try_into().unwrap());
 		};
