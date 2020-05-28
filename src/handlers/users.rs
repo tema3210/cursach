@@ -81,7 +81,7 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 }
 
 
-#[get("/users/login")]
+#[post("/users/login")]
 pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl Responder {
 	println!("users/login handler called");
 	use schema::UserData::dsl::*;
