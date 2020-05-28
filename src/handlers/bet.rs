@@ -43,7 +43,7 @@ pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
 pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Responder {
 	println!("bet/make handler called");
 
-	let passwh = base64::decode(req.passwh);
+	let passwh = base64::decode(&req.passwh);
 	if let Err(_) =  passwh {
 		use std::convert::TryInto;
 		return String::from("").with_status(400u16.try_into().unwrap());
