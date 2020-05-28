@@ -30,23 +30,33 @@ pub async fn usr_about(info: web::Path<(String,)>) -> impl Responder {
 					String::from("").with_status(403.try_into().unwrap())
 				},
 				1..=2 => {
-					use serde_json::builder::ObjectBuilder;
-
 					let ut = match usr.UserType {
 						Some(1) => "Admin",
 						Some(2) => "User",
 						Some(3) => "Guest",
-						Some(_) => unreachable!(),
+						Some(_) => "No such kind",
 						None => "NULL",
 					};
-					let mut builder = ObjectBuilder::new();
-					//Insert allowed on lvl 1 data
-					builder = builder.insert_into("UserType",ut).insert_into("About",usr.AssocInf);
-					if usr.PublicProfile == 2 {
-						//Insert allowed on lvl 2 data
-						builder = builder.insert_into("Credits",usr.Credits).insert_into("Balance",usr.Balance);
-					};
-					builder.build().to_string().with_status(200u16.try_into().unwrap())
+					match usr.PublicProfile {
+						1 => {
+							use serde_json::json;
+							json!({
+								"User type" : ut,
+								"About": usr.AssocInf,
+								//"Credits": usr.Credits,
+								//"Balance": usr.Balance,
+							}).to_string().with_status(200u16.try_into().unwrap())
+						},
+						2 => {
+							use serde_json::json;
+							json!({
+								"User type" : ut,
+								"About": usr.AssocInf,
+								"Credits": usr.Credits,
+								"Balance": usr.Balance,
+							}).to_string().with_status(200u16.try_into().unwrap())
+						},
+					}
 				},
 				_ => {
 					String::from("").with_status(500u16.try_into().unwrap())
@@ -88,7 +98,8 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 					String::from("").with_status(http::status::StatusCode::from_u16(403).unwrap())
 				},
 				1 => {
-					serde_json::json!({
+					use serde_json::json;
+					json!({
 						"id": x
 					}).to_string().with_status(http::status::StatusCode::from_u16(200).unwrap())
 				},
