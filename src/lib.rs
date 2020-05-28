@@ -10,7 +10,7 @@ use diesel::{
 };
 use tokio_diesel::*;
 
-pub fn getB64Config() {
+pub fn getB64Config() -> base64::Config {
     base64::Config::new(base64::CharacterSet::Bcrypt,true)
 }
 
