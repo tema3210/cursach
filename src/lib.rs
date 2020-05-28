@@ -212,7 +212,7 @@ pub mod Protocol {
 	#[derive(Deserialize)]
 	pub struct BetMakePayload {
 		pub login: String,
-		pub passwh: Vec<u8>,
+		pub passwh: String,
 		pub on_id_run: i32,
 		pub money: f64,
 		pub on_id_horse: i32,
@@ -231,7 +231,7 @@ pub mod Protocol {
 	#[derive(Deserialize)]
 	pub struct UserRegisterPayload {
 		pub login: String,
-		pub passwh: Vec<u8>,
+		pub passwh: String,
 		pub credits: u64,
 		pub about: String,
 		pub public: bool,
