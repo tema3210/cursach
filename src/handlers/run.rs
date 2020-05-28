@@ -129,8 +129,15 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 	use std::convert::TryInto;
 	let usq = {
 		use schema::UserData::dsl::*;
+
+		let passwh = base64::decode(info.passwh);
+		if let Err(_) = passwh {
+			return String::from("").with_status(400u16.try_into().unwrap());
+		};
+
+
 		UserData.filter(Login.eq(Some(info.login.clone())))
-				.filter(Passwh.eq(Some(info.passwh.clone())))
+				.filter(Passwh.eq(Some(passwh.unwrap())))
 	};
 	let res = lib::transaction(move |conn|{
 		usq.load::<lib::ORM::UserData>(conn)

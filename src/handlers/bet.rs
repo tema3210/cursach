@@ -42,12 +42,18 @@ pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
 #[post("/bet/make")]
 pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Responder {
 	println!("bet/make handler called");
+
+	let passwh = base64::decode(req.passwh);
+	if let Err(_) =  passwh {
+		return String::from("").with_status(400u16.try_into().unwrap());
+	};
+
 	let (id,code) = {
 		use schema::UserData::dsl::*;
 
 		let stmt = UserData.select(ID)
 			.filter(Login.eq(Some(req.login.clone())))
-			.filter(Passwh.eq(Some(req.passwh.clone())));
+			.filter(Passwh.eq(Some(passwh.unwrap())));
 		let res = lib::transaction(move |conn|{
 			stmt.load::<i32>(conn)
 		}).await.unwrap_or(Vec::new());

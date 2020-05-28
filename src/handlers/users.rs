@@ -87,9 +87,14 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 	use schema::UserData::dsl::*;
 	use serde_json;
 
+	let passwh = base64::decode(info.passwh);
+	if let Err(_) = passwh {
+		return String::from("").with_status(400u16.try_into().unwrap());
+	};
+
 	let stmt = UserData.select(ID)
 		.filter(Login.eq(Some(info.login.clone())))
-		.filter(Passwh.eq(Some(info.passwh.clone())));
+		.filter(Passwh.eq(Some(passwh.unwrap())));
 
 	let res = lib::transaction(|conn| {
 		stmt.load::<i32>(conn)

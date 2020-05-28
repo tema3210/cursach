@@ -237,7 +237,7 @@ pub mod Protocol {
 	#[derive(Deserialize)]
 	pub struct UserLoginPayload {
 		pub login: String,
-		pub passwh: Vec<u8>,
+		pub passwh: String,
 	}
 
 }
