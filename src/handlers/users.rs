@@ -87,6 +87,8 @@ pub async fn usr_login(info: web::Json<lib::Protocol::UserLoginPayload>) -> impl
 	use schema::UserData::dsl::*;
 	use serde_json;
 
+	println!("Endcoded password hash: {:?}",&info.passwh);
+
 	let passwh = base64::decode(&info.passwh);
 	if let Err(_) = passwh {
 		use std::convert::TryInto;
