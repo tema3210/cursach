@@ -14,11 +14,8 @@ use std::io::BufReader;
 use rustls::internal::pemfile::{certs, rsa_private_keys};
 use rustls::{NoClientAuth, ServerConfig};
 
-
-
 mod lib;
 pub mod schema;
-
 
 #[get("/static/{file}")]
 async fn static_srv(info: web::Path<(String,)>) -> impl Responder {
