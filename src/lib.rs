@@ -20,7 +20,7 @@ static DBCONNPOOL: OnceCell<Pool<ConnectionManager<diesel::MysqlConnection>>> = 
 #[derive(Debug)]
 pub struct PoolError{pub msg: &'static str}
 
-#[cfg(not(test))]
+#[inline(always)]
 async fn transaction_inner<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
     F: 'static + FnOnce(&diesel::MysqlConnection) -> QueryResult<T> + Send,
@@ -39,29 +39,16 @@ where
 		},
 	}
 }
-#[cfg(test)]
-type conn_t = diesel::SqliteConnection;
 
-#[cfg(not(test))]
 type conn_t = diesel::MysqlConnection;
 
-#[cfg(test)]
-#[path = "tests_framework/mod.rs"]
-mod tests_framework;
 
 #[inline(always)]
 pub async fn transaction<T: 'static + std::marker::Send, F>(f: F) -> std::result::Result<T, PoolError>
 where
     F: 'static + FnOnce(&conn_t) -> QueryResult<T> + Send,
 {
-    #[cfg(not(test))]
-    {
-        return transaction_inner(f).await
-    }
-    #[cfg(test)]
-    {
-        return tests_framework::transaction_inner(f).await
-    }
+    return transaction_inner(f).await
 }
 
 pub fn initConnPool(url: String){
