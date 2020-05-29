@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate diesel;
-#[macro_use]
-extern crate diesel_migrations;
+//#[macro_use]
+//extern crate diesel_migrations;
 
 #[allow(nonstandard_style)]
 
@@ -17,12 +17,8 @@ use rustls::{NoClientAuth, ServerConfig};
 
 
 mod lib;
-//use crate::lib::*;
 pub mod schema;
 
-#[cfg(test)]
-#[path = "tests_framework/mod.rs"]
-mod tests_framework;
 
 #[get("/static/{file}")]
 async fn static_srv(info: web::Path<(String,)>) -> impl Responder {
