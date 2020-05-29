@@ -78,37 +78,6 @@ pub mod ORM {
 		pub Winner: Option<i32>, //Loshad chto pobedila
 		pub CompetLFK: Option<i32> //
 	}
-    //
-    // //use diesel_derive_enum::DbEnum;
-    //
-    // /*,DbEnum,*/
-	// #[derive(Serialize,Clone,Debug,PartialEq,Copy)]
-    // //#[DieselType = "User_type"]
-	// pub enum UserType {
-	// 	Admin=1,
-	// 	User=2,
-	// 	Guest=3,
-	// }
-	// impl std::default::Default for UserType {
-	// 	fn default() -> Self {
-	// 		Self::Guest
-	// 	}
-	// }
-    //
-	// impl<DB> FromSql<Integer, DB> for UserType
-	// where
-	//     DB: Backend,
-	//     i32: FromSql<Integer, DB>,
-	// {
-	//     fn from_sql(bytes: Option<&<DB as Backend>::RawValue>) -> diesel::deserialize::Result<Self> {
-	//         match i32::from_sql(bytes)? {
-	//             1 => Ok(UserType::Admin),
-	//             2 => Ok(UserType::User),
-	//             3 => Ok(UserType::Guest),
-	//             x => Err(format!("Unrecognized variant {}", x).into()),
-	//         }
-	//     }
-	// }
 
 	//Public profile opts: 0 - not; 1 - without balance and co; 2 - with.
 	#[derive(Queryable,Clone)]
