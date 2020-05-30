@@ -12,7 +12,6 @@ pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder {
 	println!("run/about handler called");
 	use std::convert::TryInto;
 	use serde_json;
-	//TODO
 	let sq = {
 		use schema::Run::dsl::*;
 		Run.filter(ID.eq(info.0))
@@ -45,12 +44,7 @@ pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder {
 }
 
 
-#[get("/run/of/owner/{id}")]
-pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
-	println!("run/of/owner handler called");
-	//TODO
-	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
-}
+
 
 #[get("/run/pending")]
 pub async fn runs_pending() -> impl Responder {
@@ -115,12 +109,6 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
 }
 
 
-#[get("/run/of/horse/{id}")]
-pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{
-	println!("run/of/horse handler called");
-	//TODO
-	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
-}
 
 
 #[post("/run/register")]
@@ -235,4 +223,19 @@ pub async fn run_register(info: web::Json<lib::Protocol::RunRegisterPayload>) ->
 			String::from("").with_status(http::status::StatusCode::from_u16(500).unwrap())
 		}
 	}
+}
+
+#[get("/run/of/owner/{id}")]
+pub async fn run_of_owner(_info: web::Path<(u64,)>) -> impl Responder{
+	println!("run/of/owner handler called");
+	//TODO
+	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
+}
+
+
+#[get("/run/of/horse/{id}")]
+pub async fn run_of_horse(_info: web::Path<(u64,)>) -> impl Responder{
+	println!("run/of/horse handler called");
+	//TODO
+	"Unimplemented".with_status(http::status::StatusCode::from_u16(501).unwrap())
 }
