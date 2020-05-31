@@ -6,40 +6,71 @@ use diesel::ExpressionMethods;
 use diesel::QueryDsl;
 use diesel::RunQueryDsl;
 
-
 #[get("/run/about/{id}")]
-pub async fn run_about(info: web::Path<(i32,)>) -> impl Responder {
+pub async fn run_about(info: web::Path<(i32,)>)-> impl Responder {
 	println!("run/about handler called");
 	use std::convert::TryInto;
 	use serde_json;
-	let sq = {
+
+	let run_q = {
 		use schema::Run::dsl::*;
 		Run.filter(ID.eq(info.0))
 	};
-	let res = lib::transaction(move |conn|{
-		sq.load::<lib::ORM::Run>(conn)
+
+	let comp_q = |id: i32| {
+		use schema::CompetList::dsl::*;
+		CompetList.select(HorseID).filter(Run_compet.eq(id))
+	};
+
+	let res = lib::transaction(move |conn| {
+		let res = run_q.load::<lib::ORM::Run>(conn);
+		match res {
+			Ok(v) if v.len() == 0 => {
+				let el = &v[0];
+				if let Some(fk) = el.CompetLFK {
+					Ok(Some((comp_q(fk).load::<i32>(conn)?,el.clone())))
+				} else {
+					Ok(None)
+				}
+			},
+			Ok(_) => {
+				Ok(None)
+			},
+			Err(_) => {
+				Ok(None)
+			}
+		}
 	}).await;
 
 	match res {
-		Ok(x) => {
-			match x.len() {
-				0 => {
-					String::from("").with_status(404u16.try_into().unwrap())
-				},
-				1 => {
-					let resp = {
-						serde_json::ser::to_string(&x[0]).unwrap()
-					};
-					resp.with_status(200u16.try_into().unwrap())
-				},
-				_ => {
-					String::from("").with_status(500u16.try_into().unwrap())
-				}
+		Ok(x) if x.is_some() => {
+			let (list,el) = x.unwrap();
+
+			let mut nlist = Vec::new();
+			for i in list {
+				nlist.push((i,crate::handlers::horses::horse_coef(i).await))
 			}
+
+			// let list = list.into_iter().map(|el|{
+			// 	(el,crate::handlers::horses::horse_coef(el).await)
+			// }).collect::<Vec<_>>();
+
+			use serde_json::json;
+
+			json!({
+				"ID": el.ID,
+				"Date": el.Date,
+				"Place": el.Place,
+				"Winner": el.Winner,
+				"HorsesList": nlist
+			}).to_string().with_status(200u16.try_into().unwrap())
+		},
+		Ok(_) => {
+			String::from("").with_status(500u16.try_into().unwrap())
 		},
 		Err(_) => {
 			String::from("").with_status(500u16.try_into().unwrap())
-		}
+		},
 	}
 }
 

@@ -70,7 +70,7 @@ pub mod ORM {
 
 	use serde::Serialize;
 
-	#[derive(Queryable,Serialize)]
+	#[derive(Queryable,Serialize,Clone)]
 	pub struct Run {
 		pub ID: i32,
 		pub Date: Option<chrono::NaiveDate>,
@@ -232,6 +232,5 @@ pub mod Errors {
 			}
 		}
 	}
-
 
 }
