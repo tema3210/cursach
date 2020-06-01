@@ -18,51 +18,59 @@ pub async fn run_about(info: web::Path<(i32,)>)-> impl Responder {
 	};
 
 	let comp_q = |id: i32| {
-		use schema::CompetList::dsl::*;
-		CompetList.select(HorseID).filter(Run_compet.eq(id))
+		use schema::Horses::dsl::*;
+
+		Horses.select((ID,WinRate)).filter(
+			ID.eq_any({
+				use schema::CompetList::dsl::*;
+				CompetList.select(HorseID).filter(Run_compet.eq(id))
+			})
+		)
+
 	};
 
 	let res = lib::transaction(move |conn| {
-		let res = run_q.load::<lib::ORM::Run>(conn);
-		match res {
-			Ok(v) if v.len() == 0 => {
-				let el = &v[0];
-				if let Some(fk) = el.CompetLFK {
-					Ok(Some((comp_q(fk).load::<i32>(conn)?,el.clone())))
-				} else {
-					Ok(None)
-				}
-			},
-			Ok(_) => {
-				Ok(None)
-			},
-			Err(_) => {
+		let v = run_q.load::<lib::ORM::Run>(conn)?;
+
+		if v.len() == 1 {
+			let el = &v[0];
+			if let Some(fk) = el.CompetLFK {
+				Ok(Some((comp_q(fk).load::<(i32,Option<f64>)>(conn)?,el.clone())))
+			} else {
 				Ok(None)
 			}
+		} else {
+			Ok(None)
 		}
+
 	}).await;
 
 	match res {
 		Ok(x) if x.is_some() => {
+			use serde_json::json;
+
 			let (list,el) = x.unwrap();
 
-			let mut nlist = Vec::new();
-			for i in list {
-				nlist.push((i,crate::handlers::horses::horse_coef(i).await))
-			}
-
-			// let list = list.into_iter().map(|el|{
-			// 	(el,crate::handlers::horses::horse_coef(el).await)
-			// }).collect::<Vec<_>>();
-
-			use serde_json::json;
+			let list = list.into_iter().map(|(id,w_rate)|{
+				if w_rate.is_some() {
+					json!({
+						"id": id,
+						"rate": 1.0 - w_rate.unwrap()
+					}).to_string()
+				} else {
+					json!({
+						"id": id,
+						"rate": "not set"
+					}).to_string()
+				}
+			}).collect::<Vec<String>>();
 
 			json!({
 				"ID": el.ID,
 				"Date": el.Date,
 				"Place": el.Place,
 				"Winner": el.Winner,
-				"HorsesList": nlist
+				"HorsesList": list
 			}).to_string().with_status(200u16.try_into().unwrap())
 		},
 		Ok(_) => {

@@ -97,9 +97,30 @@ pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Res
 							.filter(ID.eq(id))
 					}
 				};
+				//check if current
+				let h_rate_check = {
+					use schema::Horses::dsl::*;
+					Horses.select(WinRate).filter(ID.eq(req.on_id_horse))
+					//Ok(1.0-(1.0-rate))
+				};
 
 				//Do transaction
 				let res = lib::transaction(move |conn|{
+					let hr: Vec<Option<f64>> = h_rate_check.load(conn)?;
+					match hr.len() {
+						1 if hr[0].is_some() => {
+							if req.expected_win_rate != (1.0 - hr[0].unwrap()) {
+								new_code = 409;
+							} else {
+								return Ok(());
+							}
+						},
+						_ => {
+							new_code = 500;
+							return Ok(());
+						}
+					};
+
 					let bal: Vec<f64> = stmt_on_usr.get_results(conn)?;
 					match bal.len() {
 						//Ok branch
@@ -130,6 +151,7 @@ pub async fn bet_make(req: web::Json<lib::Protocol::BetMakePayload>) -> impl Res
 							403 => "ill-formed request: not enough money",
 							500 => "Insane balance result",
 							200 => "",
+							409 => "The horse winrate is changed",
 							_ => unreachable!(),
 						}
 					},

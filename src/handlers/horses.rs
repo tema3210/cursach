@@ -29,35 +29,6 @@ pub async fn horse_info(info: web::Path<(i32,)>) -> impl Responder{
 	}
 }
 
-// #[get("horses/of/run/{id}")]
-pub async fn horse_coef(which: i32) -> Result<f64,&'static str> {
-	println!("horses/of/run handler called");
-
-	let prep_select = {
-		use schema::Horses::dsl::*;
-		Horses.select(WinRate).filter(ID.eq(which))
-	};
-
-	let res = lib::transaction(move |conn| {
-		prep_select.load::<Option<f64>>(conn)
-	}).await;
-	match res {
-		Ok(v) if v.len() == 1 => {
-			if let Some(rate) = v[0] {
-				Ok(1.0-(1.0-rate))
-			} else {
-				Err("winrate not set")
-			}
-		},
-		Ok(v) => {
-			Err("more than one horse_infose for given ID")
-		},
-		Err(_) => {
-			Err("Internal error")
-		}
-	}
-
-}
 
 #[get("/horses/info/{idl}-{idh}")]
 pub async fn horse_info_many(_info: web::Path<(u64,u64)>) -> impl Responder{

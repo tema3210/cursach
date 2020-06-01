@@ -172,6 +172,7 @@ pub mod Protocol {
 		pub on_id_run: i32,
 		pub money: f64,
 		pub on_id_horse: i32,
+        pub expected_win_rate: f64,
 	}
 
 	#[derive(Deserialize,Clone)]
