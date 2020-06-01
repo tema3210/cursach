@@ -56,14 +56,14 @@ pub async fn run_about(info: web::Path<(i32,)>)-> impl Responder {
 					json!({
 						"id": id,
 						"rate": 1.0 - w_rate.unwrap()
-					}).to_string()
+					})
 				} else {
 					json!({
 						"id": id,
 						"rate": "not set"
-					}).to_string()
+					})
 				}
-			}).collect::<Vec<String>>();
+			}).collect::<Vec<_>>();
 
 			json!({
 				"ID": el.ID,
