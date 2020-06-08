@@ -114,7 +114,7 @@ pub async fn runs_pending_of(info: web::Path<(i32,)>) -> impl Responder {
 		use schema::Run::dsl::*;
 		Run.filter(Winner.eq(Option::<i32>::None)).filter(ID.eq_any({
 			use schema::Bet::dsl::*;
-			Bet.select(ID).filter(Who.eq(Some(info.0)))
+			Bet.select(on_run).filter(Who.eq(Some(info.0)))
 		}))
 	};
 

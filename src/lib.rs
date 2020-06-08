@@ -117,7 +117,7 @@ pub mod ORM {
 		pub ID: i32,
 		pub Who: Option<i32>, // Kto?
 		pub Value: Option<f64>, // Skoko?
-		pub on_run: Option<i32>, // Na zabeg: - 
+		pub on_run: i32, // Na zabeg: -
 		pub on_winner: Option<i32>,
 		pub win_rate: Option<f64>,
 	}

@@ -3,7 +3,7 @@ table! {
         ID -> Integer,
         Who -> Nullable<Integer>,
         Value -> Nullable<Double>,
-        on_run -> Nullable<Integer>,
+        on_run -> Integer,
         on_winner -> Nullable<Integer>,
         win_rate -> Nullable<Double>,
     }
