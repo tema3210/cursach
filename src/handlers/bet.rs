@@ -21,7 +21,7 @@ pub async fn bet_about(info: web::Path<(i32,)>) -> impl Responder{
 }
 
 #[get("/bet/of/{id_usr}/")]
-pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder{
+pub async fn bet_of(info: web::Path<(i32,)>) -> impl Responder {
 	println!("bet/of handler called");
 	use schema::Bet::dsl::*;
 	use serde_json;

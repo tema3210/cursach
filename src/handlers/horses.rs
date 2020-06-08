@@ -15,7 +15,7 @@ pub async fn horse_info(info: web::Path<(i32,)>) -> impl Responder{
 		Horses.filter(ID.eq(info.0))
 	};
 	let resp = lib::transaction(move |conn|{
-		prep_select.execute(conn)
+		prep_select.load::<lib::ORM::Horses>(conn)
 	}).await;
 
 	use std::convert::TryInto;
